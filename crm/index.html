@@ -129,7 +129,7 @@ function render(){
       var pend=c.docs.filter(function(d){return !d}).length;
       var el=document.createElement('article'); el.className='case'+(c.fresh?' new':''); c.fresh=false;
       el.tabIndex=0;
-      el.innerHTML='<b>'+c.pet+'</b> <small style="color:var(--muted)">· '+c.sp+'</small><div class="r">'+c.route+'<br>'+c.owner+' (sample)</div><div class="chips2"><span class="chip '+(c.src==='WhatsApp'?'wa':'src')+'">'+c.src+'</span>'+(pend&&i>0&&i<6?'<span class="chip warn">'+pend+' docs pending</span>':'')+(/Australia|New Zealand/.test(c.route)?'<span class="chip">AU/NZ route</span>':'')+'</div>';
+      el.innerHTML='<b>'+c.pet+'</b> <small style="color:var(--muted)">· '+c.sp+'</small><div class="r">'+c.route+'<br>'+c.owner+' (sample)</div><div class="chips2"><span class="chip '+(c.src==='WhatsApp'?'wa':'src')+'">'+c.src+'</span>'+(pend&&i>0&&i<6?'<span class="chip warn">'+pend+(pend===1?' doc':' docs')+' pending</span>':'')+(/Australia|New Zealand/.test(c.route)?'<span class="chip">AU/NZ route</span>':'')+'</div>';
       el.onclick=function(){open(c)}; el.onkeydown=function(e){if(e.key==='Enter')open(c)};
       col.appendChild(el);
     });

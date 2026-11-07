@@ -3,6 +3,50 @@
   var EMAIL = 'enquiries@caspetservices.com';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+
+  /* animated hero */
+  var words = ['Australia', 'New Zealand', 'the UK', 'the USA', 'Kuala Lumpur', 'Trinidad & Tobago'];
+  var w = document.getElementById('destWord');
+  var map = document.querySelector('.flightmap');
+  if (reduce && map && map.pauseAnimations) { map.pauseAnimations(); map.setCurrentTime(0); }
+  if (w && !reduce) {
+    var wi = 0;
+    setInterval(function () {
+      w.classList.add('out');
+      setTimeout(function () {
+        wi = (wi + 1) % words.length;
+        w.textContent = words[wi];
+        w.classList.remove('out'); w.classList.add('pre');
+        void w.offsetWidth;
+        w.classList.remove('pre');
+      }, 450);
+    }, 2600);
+  }
+  var pols = Array.prototype.slice.call(document.querySelectorAll('#polaroids .pol'));
+  if (pols.length) {
+    var top = 0;
+    var lay = function () {
+      pols.forEach(function (p, k) {
+        var pos = (k - top + pols.length) % pols.length;
+        p.classList.remove('s0', 's1', 's2', 's3', 'leave');
+        p.classList.add(pos < 3 ? 's' + pos : 's3');
+      });
+    };
+    lay();
+    if (!reduce) {
+      var stack = document.getElementById('polaroids');
+      var paused = false;
+      stack.addEventListener('mouseenter', function () { paused = true; });
+      stack.addEventListener('mouseleave', function () { paused = false; });
+      setInterval(function () {
+        if (paused || document.hidden) return;
+        var cur = pols[top];
+        cur.classList.remove('s0'); cur.classList.add('leave');
+        setTimeout(function () { top = (top + 1) % pols.length; lay(); }, 380);
+      }, 3200);
+    }
+  }
+
   /* reveal on scroll */
   var els = document.querySelectorAll('.reveal');
   if (reduce || !('IntersectionObserver' in window)) {
@@ -93,6 +137,7 @@
     { k: ['how long', 'timeline', 'time', 'months', 'weeks', 'when should'], a: 'It depends on the destination. Some routes take a few weeks of prep; Australia and New Zealand from non-approved countries take many months because of the residency period. The earlier you contact us, the more options you have.' },
     { k: ['document', 'paper', 'vaccin', 'rabies', 'microchip', 'chip', 'permit', 'certificate', 'titre', 'titer'], a: 'Most moves need a microchip, up-to-date rabies vaccination, a vet health certificate and an import permit for the destination. Some routes also need a rabies blood (titre) test. We check your pet\'s records and tell you exactly what\'s missing.' },
     { k: ['usa', 'america', 'united states', 'us '], a: 'Yes, we\'ve flown cats from Brunei to the USA, including a four-cat move where we housed the cats until the family was settled and coordinated with the US receivers.' },
+    { k: ['uk', 'united kingdom', 'england', 'london', 'britain', 'scotland'], a: 'Yes, we\'ve moved dogs from Brunei to the United Kingdom, including Monty and Annie. Send your details through the ' + reqLink + ' and we\'ll map out the requirements.' },
     { k: ['malaysia', 'kuala lumpur', 'kl', 'miri', 'sabah', 'sarawak'], a: 'Yes, we\'ve moved whole households of dogs and cats from Brunei to Kuala Lumpur. Send your details through the ' + reqLink + '.' },
     { k: ['board', 'housing', 'stay', 'kennel', 'look after', 'hotel'], a: 'If you need to fly ahead and get settled, ask us about looking after your pet in the meantime. We\'ve done this for past clients. Tick "boarding" in the ' + reqLink + '.' },
     { k: ['arrive', 'arrival', 'quarantine', 'landing', 'customs', 'pick up', 'collect'], a: 'On arrival your pet goes to the animal holding area with food and water, documents are reviewed, a vet may inspect, then customs clears and your pet is handed over to you or to quarantine if the destination requires it. See "What happens on arrival" above.' },
@@ -141,6 +186,7 @@
     }
     if (open) document.getElementById('chatIn').focus();
   };
+  var ob = document.getElementById('openChatBtn'); if (ob) ob.addEventListener('click', function () { toggle(true); });
   fab.addEventListener('click', function () { toggle(!chat.classList.contains('open')); });
   document.getElementById('chatClose').addEventListener('click', function () { toggle(false); });
   document.getElementById('chatForm').addEventListener('submit', function (e) {

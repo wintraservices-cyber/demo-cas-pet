@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>CAS Relocation Desk — Back office (Demo)</title>
+<link rel="icon" href="/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+body{background:#f4ede4}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 37px)}
+.side{background:#2a211b;color:#e9dccd;padding:20px 16px;display:flex;flex-direction:column;gap:6px}
+.side .brand{margin-bottom:18px}.side .brand b{color:#fff}.side .brand small{color:#bfae9c}
+.side a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14.5px;color:#d8c8b6}
+.side a.on,.side a:hover{background:rgba(255,255,255,.08);color:#fff}
+.side .soon{margin-left:auto;font-size:10.5px;background:rgba(243,201,154,.18);color:#f3c99a;padding:2px 7px;border-radius:999px}
+.side .foot{margin-top:auto;font-size:12px;color:#a8988a;line-height:1.5}
+.main{padding:24px 26px;overflow:hidden}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.top h1{font-family:var(--serif);font-size:30px;font-weight:600}
+.top p{color:var(--muted);font-size:14px}
+.sample{display:inline-block;background:#fff3d6;color:#7a5a32;border:1px solid #f0d9b8;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.kpi small{color:var(--muted);font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+.kpi b{display:block;font-family:var(--serif);font-size:32px;color:var(--ink);font-weight:600;line-height:1.2}
+.kpi span{font-size:12.5px;color:#2f7a4b;font-weight:700}
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:14px;overflow-x:auto;padding-bottom:12px}
+.col{background:#ebe2d6;border-radius:16px;padding:12px;min-height:420px}
+.col h3{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--brown);display:flex;justify-content:space-between;margin:2px 4px 10px}
+.col h3 i{font-style:normal;background:#fff;border-radius:999px;padding:0 8px}
+.case{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.06);cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s}
+.case:hover{transform:translateY(-2px);border-color:var(--tan)}
+.case.new{animation:newcase 1.6s ease}
+@keyframes newcase{0%{background:#fff3d6;transform:scale(.95)}60%{background:#fff3d6}100%{background:#fff}}
+.case b{font-size:15px}.case .r{font-size:13px;color:var(--muted);margin:2px 0 8px}
+.chips2{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--cream);color:var(--brown)}
+.chip.src{background:#e8f0ff;color:#2f4f8a}.chip.wa{background:#e6f3ea;color:#2f7a4b}.chip.warn{background:#fdeee6;color:#a24b25}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(520px,100%);background:#fff;z-index:80;box-shadow:-20px 0 50px -20px rgba(0,0,0,.4);transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.dh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.dh h2{font-family:var(--serif);font-size:24px;font-weight:600}
+.dh p{color:var(--muted);font-size:14px}
+.dh button{margin-left:auto;border:0;background:var(--cream);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer}
+.db{padding:18px 22px;overflow-y:auto;flex:1}
+.db h4{font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--tan-d);margin:18px 0 8px}
+.stages{display:flex;gap:4px}
+.stages span{flex:1;height:6px;border-radius:4px;background:var(--line)}
+.stages span.on{background:var(--brown)}
+.docs li{list-style:none;display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.docs li em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800}
+.ok{color:#2f7a4b}.pend{color:#a24b25}
+.aibox{background:linear-gradient(135deg,#fbf3e7,#fff);border:1px solid #f0d9b8;border-radius:14px;padding:14px;margin-top:6px}
+.aibox .lbl{font-size:12px;font-weight:800;color:#7a5a32;display:flex;gap:6px;align-items:center}
+.aibox pre{white-space:pre-wrap;font:500 14px/1.5 var(--sans);margin:10px 0}
+.aibox .typing::after{content:"▋";animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.row2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.btn.sm{padding:9px 14px;font-size:13.5px}
+.log li{list-style:none;font-size:13.5px;padding:6px 0 6px 16px;border-left:2px solid var(--line);position:relative;color:var(--muted)}
+.log li::before{content:"";position:absolute;left:-5px;top:11px;width:8px;height:8px;border-radius:50%;background:var(--tan)}
+.log li b{color:var(--ink)}
+.scrim{position:fixed;inset:0;background:rgba(30,20,14,.35);z-index:79;opacity:0;pointer-events:none;transition:.3s}
+.scrim.open{opacity:1;pointer-events:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:#2a211b;color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;z-index:90;transition:transform .35s}
+.toast.show{transform:translate(-50%,0)}
+@media (max-width:900px){.app{grid-template-columns:1fr}.side{display:none}.kpis{grid-template-columns:1fr 1fr}.main{padding:18px 14px}}
+@media (prefers-reduced-motion:reduce){.drawer,.case,.toast{transition:none!important;animation:none!important}}
+.preview{left:auto;right:14px}
+</style>
+</head>
+<body>
+<div class="demobar"><div class="wrap"><span>Demo concept by ArrowheadX for CAS Pet Services. Not CAS Pet Services' official site.</span><nav><a href="/">Demo</a><a href="/crm" aria-current="page">Back office</a><a href="/compare">Comparison</a><a href="/pitch">The plan</a></nav></div></div>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="/" style="padding:0"><img src="/img/logo.png" alt="CAS Pet Services logo"><span><b>Relocation Desk</b><small>CAS Pet Services</small></span></a>
+    <a class="on" href="#">🗂️ Pipeline</a>
+    <a href="#" data-soon>📅 Deadlines <span class="soon">Plan</span></a>
+    <a href="#" data-soon>💬 WhatsApp inbox <span class="soon">Plan</span></a>
+    <a href="#" data-soon>📄 Documents <span class="soon">Plan</span></a>
+    <a href="#" data-soon>📊 Reports <span class="soon">Plan</span></a>
+    <div class="foot">Every enquiry from the website, WhatsApp and Facebook lands here as a case. Built by Darwin &amp; Kirby at ArrowheadX.</div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div><h1>Relocation pipeline <span class="sample">Sample data</span></h1><p>Fictional pets and owners for the demo. Click any case to open it.</p></div>
+      <button class="btn btn-primary" id="simulate">＋ Simulate a website enquiry</button>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><small>Active cases</small><b id="kActive">0</b><span>across all routes</span></div>
+      <div class="kpi"><small>New enquiries</small><b id="kNew">0</b><span>waiting for a quote</span></div>
+      <div class="kpi"><small>Docs pending</small><b id="kDocs">0</b><span>items to chase</span></div>
+      <div class="kpi"><small>In transit</small><b id="kTransit">0</b><span>owners updated daily</span></div>
+    </div>
+    <div class="board" id="board"></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Case details"><div class="dh"><div><h2 id="dTitle"></h2><p id="dSub"></p></div><button id="dClose" aria-label="Close">×</button></div><div class="db" id="dBody"></div></aside>
+<div class="toast" id="toast"></div>
+<span class="preview">Preview</span>
+
+<script>
+(function(){
+var STAGES=['New enquiry','Quote sent','Docs & vet prep','Stepping country','Booked','In transit','Delivered'];
+var DOCS=['Microchip','Rabies vaccination','Rabies titre test','Vet health certificate','Import permit','Airline crate check'];
+var cases=[
+ {id:1,pet:'Mochi',sp:'Cat',owner:'R. Tan',route:'Brunei → Australia',stage:2,src:'Website',docs:[1,1,0,0,0,0],note:'Owner relocating for work; needs stepping-country plan'},
+ {id:2,pet:'Biscuit',sp:'Dog',owner:'J. Morgan',route:'Brunei → United Kingdom',stage:4,src:'WhatsApp',docs:[1,1,1,1,1,0],note:'Flight confirmed; crate fitting this week'},
+ {id:3,pet:'Luna & Pepper',sp:'Cats',owner:'A. Rahman',route:'Brunei → USA',stage:5,src:'Facebook',docs:[1,1,1,1,1,1],note:'Receiver in the US confirmed'},
+ {id:4,pet:'Kopi',sp:'Dog',owner:'S. Lee',route:'Brunei → Kuala Lumpur',stage:1,src:'Website',docs:[1,0,0,0,0,0],note:'Quote sent; waiting on vaccination card'},
+ {id:5,pet:'Nasi',sp:'Cat',owner:'M. Clarke',route:'Brunei → New Zealand',stage:3,src:'WhatsApp',docs:[1,1,1,0,0,0],note:'In approved country for residency period'},
+ {id:6,pet:'Bobo',sp:'Dog',owner:'H. Wong',route:'Brunei → Singapore',stage:0,src:'Facebook',docs:[0,0,0,0,0,0],note:'Asked about costs via Messenger'},
+ {id:7,pet:'Ginger',sp:'Cat',owner:'L. Park',route:'Brunei → USA',stage:6,src:'Website',docs:[1,1,1,1,1,1],note:'Handed over to owner. Review requested'}
+];
+var nextId=8, $=function(i){return document.getElementById(i)};
+function render(){
+  var b=$('board'); b.innerHTML='';
+  STAGES.forEach(function(st,i){
+    var list=cases.filter(function(c){return c.stage===i});
+    var col=document.createElement('section'); col.className='col';
+    col.innerHTML='<h3>'+st+'<i>'+list.length+'</i></h3>';
+    list.forEach(function(c){
+      var pend=c.docs.filter(function(d){return !d}).length;
+      var el=document.createElement('article'); el.className='case'+(c.fresh?' new':''); c.fresh=false;
+      el.tabIndex=0;
+      el.innerHTML='<b>'+c.pet+'</b> <small style="color:var(--muted)">· '+c.sp+'</small><div class="r">'+c.route+'<br>'+c.owner+' (sample)</div><div class="chips2"><span class="chip '+(c.src==='WhatsApp'?'wa':'src')+'">'+c.src+'</span>'+(pend&&i>0&&i<6?'<span class="chip warn">'+pend+' docs pending</span>':'')+(/Australia|New Zealand/.test(c.route)?'<span class="chip">AU/NZ route</span>':'')+'</div>';
+      el.onclick=function(){open(c)}; el.onkeydown=function(e){if(e.key==='Enter')open(c)};
+      col.appendChild(el);
+    });
+    b.appendChild(col);
+  });
+  $('kActive').textContent=cases.filter(function(c){return c.stage<6}).length;
+  $('kNew').textContent=cases.filter(function(c){return c.stage===0}).length;
+  $('kDocs').textContent=cases.filter(function(c){return c.stage>0&&c.stage<6}).reduce(function(a,c){return a+c.docs.filter(function(d){return !d}).length},0);
+  $('kTransit').textContent=cases.filter(function(c){return c.stage===5}).length;
+}
+function update(c){
+  var first=c.owner.split(' ')[0]==='R.'?'':'';
+  var m={0:'Hi! Thanks for reaching out to CAS Pet Services about '+c.pet+'. To prepare your quote for '+c.route.split('→ ')[1]+', could you send '+c.pet+'\'s vaccination card and microchip number? 🐾',
+  1:'Hi! Your quote for '+c.pet+'\'s move ('+c.route+') is ready. Happy to walk you through it on a quick call whenever suits you.',
+  2:'Hi! Quick update on '+c.pet+': we still need '+missing(c)+'. Once we have those we can lock in the next steps.',
+  3:c.pet+' is settling in well during the residency period. Next milestone: import paperwork for '+c.route.split('→ ')[1]+'. We\'ll keep you posted. 🐾',
+  4:'Good news: '+c.pet+'\'s flight is booked! We\'ll confirm crate drop-off time and send a packing reminder (a familiar blanket or T-shirt helps).',
+  5:c.pet+' is on the way! ✈️ We\'ll message you as soon as they land and clear arrival checks.',
+  6:c.pet+' is home! Thank you for trusting CAS Pet Services. If you have a minute, a Google review helps other families find us. 🧡'};
+  return m[c.stage];
+}
+function missing(c){var m=[];c.docs.forEach(function(d,i){if(!d)m.push(DOCS[i].toLowerCase())});return m.length?m.join(', '):'nothing, all set'}
+var cur=null;
+function open(c){
+  cur=c;
+  $('dTitle').textContent=c.pet+' · '+c.sp;
+  $('dSub').textContent=c.route+' · '+c.owner+' (sample) · via '+c.src;
+  var st='<div class="stages">'+STAGES.map(function(s,i){return '<span class="'+(i<=c.stage?'on':'')+'" title="'+s+'"></span>'}).join('')+'</div><p style="margin-top:8px;font-weight:800">Stage: '+STAGES[c.stage]+'</p>';
+  var docs='<ul class="docs">'+DOCS.map(function(d,i){return '<li>'+(c.docs[i]?'✅':'⏳')+' '+d+'<em class="'+(c.docs[i]?'ok':'pend')+'">'+(c.docs[i]?'Received':'Pending')+'</em></li>'}).join('')+'</ul>';
+  $('dBody').innerHTML=st+
+   '<h4>AI case summary</h4><div class="aibox"><div class="lbl">✨ Summary</div><pre>'+c.pet+' ('+c.sp.toLowerCase()+') moving '+c.route+'. '+c.note+'. Pending: '+missing(c)+'.'+(/Australia|New Zealand/.test(c.route)?' AU/NZ route: residency in an approved country required before import.':'')+'</pre></div>'+
+   '<h4>Documents</h4>'+docs+
+   '<div class="row2"><button class="btn btn-ghost sm" id="aiDoc">✨ AI-check an uploaded certificate</button></div><div id="docOut"></div>'+
+   '<h4>Owner update (AI draft)</h4><div class="aibox"><div class="lbl">✨ WhatsApp draft</div><pre id="draft"></pre><div class="row2"><button class="btn btn-wa sm" id="sendUpd">Send on WhatsApp</button><button class="btn btn-ghost sm" id="regen">Rewrite</button></div></div>'+
+   '<h4>Actions</h4><div class="row2">'+(c.stage<6?'<button class="btn btn-primary sm" id="adv">Move to “'+STAGES[c.stage+1]+'” →</button>':'')+'</div>'+
+   '<h4>Activity</h4><ul class="log"><li><b>Case created</b> from '+c.src+' enquiry</li><li><b>Assistant</b> answered route questions</li>'+(c.stage>0?'<li><b>Quote</b> sent to owner</li>':'')+(c.stage>4?'<li><b>Flight</b> booked</li>':'')+'</ul>';
+  typeDraft(update(c));
+  $('aiDoc').onclick=function(){
+    var o=$('docOut'); o.innerHTML='<div class="aibox"><div class="lbl">✨ Reading vet_certificate.pdf…</div><pre class="typing"></pre></div>';
+    var idx=c.docs.indexOf(0);
+    setTimeout(function(){o.innerHTML='<div class="aibox"><div class="lbl">✨ Certificate check</div><pre>✓ Pet name and microchip number match the case\n✓ Vet signature and clinic stamp found\n✓ Vaccination date found\n⚠ Please confirm the expiry date with the clinic before booking'+(idx>-1?'\n→ Marked “'+DOCS[idx]+'” as received':'')+'</pre></div>';
+      if(idx>-1){c.docs[idx]=1;render();setTimeout(function(){open(c)},1400)}},1100);
+  };
+  $('regen').onclick=function(){typeDraft(update(c).replace('Hi!','Hello from the CAS team!'))};
+  $('sendUpd').onclick=function(){toast('Demo: this would send the update to the owner on WhatsApp')};
+  var adv=$('adv'); if(adv) adv.onclick=function(){
+    c.stage++; if(c.stage===3&&!/Australia|New Zealand/.test(c.route)) c.stage++;
+    render(); open(c); toast(c.pet+' moved to “'+STAGES[c.stage]+'”. Owner update drafted.');
+  };
+  $('drawer').classList.add('open'); $('scrim').classList.add('open');
+}
+var tt;
+function typeDraft(t){
+  var el=$('draft'); clearInterval(tt);
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=t;return}
+  el.textContent=''; el.classList.add('typing'); var i=0;
+  tt=setInterval(function(){el.textContent=t.slice(0,i+=3); if(i>=t.length){clearInterval(tt);el.classList.remove('typing')}},18);
+}
+function close(){$('drawer').classList.remove('open');$('scrim').classList.remove('open')}
+$('dClose').onclick=close; $('scrim').onclick=close;
+document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+function toast(t){var x=$('toast');x.textContent=t;x.classList.add('show');clearTimeout(x._t);x._t=setTimeout(function(){x.classList.remove('show')},2600)}
+var samples=[['Teh Tarik','Cat','Brunei → Australia','N. Hassan'],['Rocky','Dog','Brunei → United Kingdom','P. Evans'],['Milo','Dog','Brunei → USA','K. Lim']];
+$('simulate').onclick=function(){
+  var s=samples[(nextId)%samples.length];
+  var c={id:nextId++,pet:s[0],sp:s[1],route:s[2],owner:s[3],stage:0,src:'Website',docs:[0,0,0,0,0,0],note:'New request from the website form: target move in 3 months, owner travelling separately',fresh:true};
+  cases.push(c); render(); toast('New website enquiry: '+c.pet+' ('+c.route+'). Case created and reply drafted.');
+};
+document.querySelectorAll('[data-soon]').forEach(function(a){a.onclick=function(e){e.preventDefault();toast('Part of the plan: see “The plan” page')}});
+render();
+})();
+</script>
+</body>
+</html>

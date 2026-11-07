@@ -47,6 +47,80 @@
     }
   }
 
+
+  /* relocation lightbox with shared-element (FLIP) transition */
+  var zs = Array.prototype.slice.call(document.querySelectorAll('img.zoomable'));
+  var lb = document.getElementById('lb');
+  if (zs.length && lb) {
+    var lbImg = lb.querySelector('.lb-img'), lbCap = lb.querySelector('.lb-cap');
+    var idx = -1, busy = false, lastFocus = null;
+    var fly = function (src, from, to, radiusTo, done) {
+      if (reduce) { done(); return; }
+      var f = document.createElement('img');
+      f.src = src; f.className = 'lb-fly';
+      f.style.left = from.left + 'px'; f.style.top = from.top + 'px';
+      f.style.width = from.width + 'px'; f.style.height = from.height + 'px';
+      document.body.appendChild(f);
+      void f.offsetWidth;
+      f.style.transform = 'translate(' + (to.left - from.left) + 'px,' + (to.top - from.top) + 'px) scale(' + (to.width / from.width) + ',' + (to.height / from.height) + ')';
+      f.style.borderRadius = radiusTo;
+      var fin = false, end = function () { if (fin) return; fin = true; f.remove(); done(); };
+      f.addEventListener('transitionend', end); setTimeout(end, 700);
+    };
+    var openAt = function (i) {
+      if (busy) return; busy = true; idx = i; lastFocus = document.activeElement;
+      var src = zs[i];
+      lbImg.src = src.src; lbImg.alt = src.alt; lbCap.textContent = src.dataset.cap || '';
+      lb.hidden = false; lbImg.style.visibility = 'hidden';
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(function () {
+        lb.classList.add('open');
+        var from = src.getBoundingClientRect(), to = lbImg.getBoundingClientRect();
+        src.style.visibility = 'hidden';
+        fly(src.src, from, to, '16px', function () { lbImg.style.visibility = ''; busy = false; lb.querySelector('.lb-close').focus(); });
+      });
+    };
+    var close = function () {
+      if (busy || lb.hidden) return; busy = true;
+      var src = zs[idx], from = lbImg.getBoundingClientRect();
+      src.scrollIntoView({ block: 'nearest' });
+      var to = src.getBoundingClientRect();
+      lbImg.style.visibility = 'hidden'; lb.classList.remove('open');
+      fly(lbImg.src, from, to, '12px', function () {
+        src.style.visibility = ''; lb.hidden = true; document.body.style.overflow = ''; busy = false;
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      });
+    };
+    var step = function (d) {
+      if (busy) return;
+      zs[idx].style.visibility = '';
+      idx = (idx + d + zs.length) % zs.length;
+      zs[idx].style.visibility = 'hidden';
+      var swap = function () { lbImg.src = zs[idx].src; lbImg.alt = zs[idx].alt; lbCap.textContent = zs[idx].dataset.cap || ''; };
+      if (reduce || !lbImg.animate) { swap(); return; }
+      busy = true;
+      lbImg.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (-40 * d) + 'px) scale(.97)' }], { duration: 180, easing: 'ease-in' }).onfinish = function () {
+        swap();
+        lbImg.animate([{ opacity: 0, transform: 'translateX(' + (40 * d) + 'px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = function () { busy = false; };
+      };
+    };
+    zs.forEach(function (z, i) {
+      z.addEventListener('click', function () { openAt(i); });
+      z.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAt(i); } });
+    });
+    lb.querySelector('.lb-scrim').addEventListener('click', close);
+    lbImg.addEventListener('click', close);
+    lb.querySelector('.lb-close').addEventListener('click', close);
+    lb.querySelector('.lb-prev').addEventListener('click', function () { step(-1); });
+    lb.querySelector('.lb-next').addEventListener('click', function () { step(1); });
+    document.addEventListener('keydown', function (e) {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowRight') step(1);
+      else if (e.key === 'ArrowLeft') step(-1);
+    });
+  }
+
   /* reveal on scroll */
   var els = document.querySelectorAll('.reveal');
   if (reduce || !('IntersectionObserver' in window)) {
